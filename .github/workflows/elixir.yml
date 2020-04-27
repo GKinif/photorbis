@@ -31,12 +31,23 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: Cache deps
+      uses: actions/cache@v1
+      with:
+        path: deps
+        key: ${{ runner.os }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+        restore-keys: |
+          ${{ runner.os }}-mix-
+
     - name: Setup elixir
       uses: actions/setup-elixir@v1
       with:
         elixir-version: 1.9.4
         otp-version: 22.2
+
     - name: Install Dependencies
       run: mix deps.get
+
     - name: Run Tests
       run: mix test
